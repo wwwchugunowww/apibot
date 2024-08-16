@@ -1,30 +1,27 @@
+const db = require("../model/model"); // Импортируем модель userbot
+
 class UsertelegramController {
-    async registration(req, res) {
-        try {
-            // Заглушка для метода регистрации
-            res.status(200).json({ message: 'Telegram user registered successfully' });
-        } catch (error) {
-            res.status(500).json({ message: 'Registration error', error });
-        }
+  async registration(req, res) {
+    try {
+      const { phoneNumber } = req.query; // Извлекаем номер телефона из query params
+      const telephone_telegram = phoneNumber;
+      const userbot = await db.userbot.findOne({
+        where: { telephone_telegram },
+      });
+      if (userbot) {
+        res.json(userbot);
+      } else {
+        res.status(404).send("User not found");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server error");
     }
-
-    async edit(req, res) {
-        try {
-            // Заглушка для метода редактирования
-            res.status(200).json({ message: 'Telegram user updated successfully' });
-        } catch (error) {
-            res.status(500).json({ message: 'Edit error', error });
-        }
-    }
-
-    async profile(req, res) {
-        try {
-            // Заглушка для метода профиля
-            res.status(200).json({ message: 'Telegram user profile retrieved successfully' });
-        } catch (error) {
-            res.status(500).json({ message: 'Profile retrieval error', error });
-        }
-    }
+    // console.log(req.body);
+    // const { phoneNumber, chatId, username } = req.body;
+    // console.log(phoneNumber, chatId, username);
+    // res.send("Акаунта нет пошли нахуй");
+  }
 }
 
 module.exports = new UsertelegramController();

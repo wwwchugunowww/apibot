@@ -1,0 +1,1 @@
+const merchantData = document.getElementById("");

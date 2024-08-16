@@ -8,6 +8,11 @@ const errorHandler = require('./src/middleweare/ErrorHandlingMiddleweare');
 const port = process.env.PORT_PROD || 3000; // Убедитесь, что порт задан
 const app = express();
 
+
+// telegram
+const telegrambot = require('./telegram')
+
+
 app.use(cors());
 app.use(express.json());
 app.use('/', router);
