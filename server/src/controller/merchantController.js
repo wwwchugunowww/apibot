@@ -1,4 +1,4 @@
-const db = require("../model/model"); // Импортируем модель userbot
+const db = require("../model/model"); 
 
 // Получаем все записи
 exports.getAllUserbots = async (req, res) => {
@@ -173,4 +173,10 @@ exports.findTerminalByKey = async (req, res) => {
     console.error(error);
     res.status(500).send("Server error");
   }
+};
+
+
+exports.apiPayLink = async (req, res) => {
+    console.log(req.body);
+    return res.send("готово");
 };

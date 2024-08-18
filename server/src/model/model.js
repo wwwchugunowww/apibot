@@ -33,7 +33,7 @@ const User = sequelize.define('User', {
 
 const userbot = sequelize.define('userbot', {
     id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    chatid: { type: DataTypes.INTEGER, allowNull: true },
+    chatid: { type: DataTypes.INTEGER, allowNull: true, unique: true },
     telephone_telegram: { type: DataTypes.STRING, allowNull: true, validate: { len: [10, 15] } },
     terminals: { type: DataTypes.JSONB, allowNull: true },
     watched: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true },
@@ -52,3 +52,4 @@ module.exports = { User, userbot };
 
 
 // bd_name = telegram_bot
+// BIGINT

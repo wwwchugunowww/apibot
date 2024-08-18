@@ -207,29 +207,29 @@ bot.onText(/\/start/, (msg) => {
 currentData = null;
 // Обработчик получения контакта
 bot.on("contact", async (msg) => {
+  console.log(msg, "msg!!!!");
   const chatId = msg.chat.id;
-  const phoneNumber = msg.contact.phone_number.slice(1);
+  const phoneNumber = msg.contact.phone_number;
+  console.log(phoneNumber, "phoneNumber");
+
 
   try {
     const response = await axios.get(
+      //http://localhost:5000/merchant/userbots/search?phoneNumber=%2B380638532509
       `http://localhost:5000/merchant/userbots/search?phoneNumber=%2B${phoneNumber}`
     );
     const data = response.data;
-console.log(response);
+console.log(data, "resData");
     currentData = data;
-    await axios.put(`http://localhost:5000/merchant/userbots/${data.id}`, {
-      chatid: chatId,
-    });
+    // await axios.post(`http://localhost:5000/merchant/userbots/${data.id}`, {
+    //   chatid: chatId,
+    // }).then(() => console.log("userbot updated")).catch((err) => console.error(err));
 
     const terminalsArray = data.terminals;
     const inlineKeyboard = terminalsArray.map((terminal, index) => [
       {
-        text: `${index + 1}. Терминал ${Object.keys(terminal)[0]}: ${
-          Object.values(terminal)[0]
-        }`,
-        callback_data: `${index}_${Object.keys(terminal)[0]}_${
-          Object.values(terminal)[0]
-        }`,
+        text: `${terminal.name}: ${terminal.status}`,
+        callback_data: `update`,
       },
     ]);
 
@@ -389,7 +389,7 @@ Email: ${data.email}
       },
     });
   } catch (error) {
-    console.error("Ошибка при получении профиля:", error);
+    console.error("Ошибка при получении профиля:", error); 
     bot.sendMessage(chatId, "Не удалось получить профиль.");
   }
 });

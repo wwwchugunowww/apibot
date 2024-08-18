@@ -4,7 +4,7 @@ const userbotController = require("../controller/merchantController");
 
 router.get("/userbots", userbotController.getAllUserbots);
 router.post("/userbots", userbotController.createUserbot);
-router.put("/userbots/:id", userbotController.updateUserbot);
+router.post("/userbots/:id", userbotController.updateUserbot);
 router.delete("/userbots/:id", userbotController.deleteUserbot);
 router.get("/userbots/search", userbotController.findUserbotByPhoneNumber);
 router.post(
@@ -16,6 +16,9 @@ router.get("/userbots/terminals", userbotController.findTerminalByKey);
 
 
 router.post("/userbots/sendbtn", userbotController.sendbtn);
+
+
+router.post("/api/paylink", userbotController.apiPayLink);
 
 
 module.exports = router;
