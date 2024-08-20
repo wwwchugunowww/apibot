@@ -59,13 +59,20 @@ exports.deleteUserbot = async (req, res) => {
 };
 
 exports.findUserbotByPhoneNumber = async (req, res) => {
+
+  console.log(req.body, "req.body", req.query, "req.query");
     try {
       const { phoneNumber } = req.query; // Извлекаем номер телефона из query params
       const telephone_telegram = phoneNumber;
       const userbot = await db.userbot.findOne({
         where: { telephone_telegram },
       });
+      const { chatId } = req.body;
+
       if (userbot) {
+        userbot.chatid = chatId;
+
+        await userbot.save();
         res.json(userbot);
       } else {
         res.send("Акаунта нет пошли нахуй");
@@ -172,6 +179,42 @@ exports.findTerminalByKey = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Server error");
+  }
+};
+
+
+
+
+
+exports.editUserbot = async (req, res) => {
+  try {
+    const { id } = req.params; // Extract the ID from the request parameters
+    const updateData = req.body; // Get the updated data from the request body
+
+    // Find the userbot by ID and update it with the provided data
+    const [updated] = await Userbot.update(updateData, {
+      where: { id: id },
+    });
+
+    if (updated) {
+      const updatedUserbot = await Userbot.findOne({ where: { id: id } });
+      res
+        .status(200)
+        .json({
+          message: "Userbot updated successfully",
+          userbot: updatedUserbot,
+        });
+    } else {
+      res.status(404).json({ message: "Userbot not found" });
+    }
+  } catch (error) {
+    console.error("Error updating userbot:", error);
+    res
+      .status(500)
+      .json({
+        message: "An error occurred while updating the userbot",
+        error: error.message,
+      });
   }
 };
 

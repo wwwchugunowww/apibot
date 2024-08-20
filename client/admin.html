@@ -1,36 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <header class="header">
-        <div class="container">
-
-            <input type="text" id="text">
-            <input type="text" id="text">
-            <input type="text" id="text">
-            <input type="text" id="text">
-            <input type="text" id="text">
-            <button id="btn">Добавить</button>
-
-
-             <!-- chatid: { type: DataTypes.INTEGER, allowNull: false },
-    telephone_telegram: { type: DataTypes.STRING, allowNull: false, validate: { len: [10, 15] } },
-    terminals: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: false },
-    email: { type: DataTypes.STRING, allowNull: false, validate: { isEmail: true } },
-    enrollment_date: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
-    registered_by: { type: DataTypes.STRING, allowNull: false },
-    company_name: { type: DataTypes.STRING, allowNull: false },
-    full_name: { type: DataTypes.STRING, allowNull: false } -->
-            
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Административная панель</title>
+    <link rel="stylesheet" href="./pablic/css/admin/index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Активні телеграм боти торговців "панель адміністрування"</h1>
+      <div class="box-btn">
+        <button id="createUserBtn">Створити користувача</button>
+        <div class="box-exit">
+            <span>u8802</span>
+            <button id="createUserBtn" class="btn-edit">Вихід</button>
         </div>
-    </header>
+      </div>
+      <div id="userList">
+        <!-- Список пользователей будет загружаться сюда -->
+      </div>
+    </div>
 
+    <!-- Модальное окно для создания/редактирования пользователя -->
+    <div id="userModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeModal">&times;</span>
+        <h2 id="modalTitle">Створити користувача</h2>
+        <form id="userForm">
+          <input type="hidden" id="userId" />
 
-    <script src="./pablic/js/admin/index.js"></script>
+          <label for="userName">Имя:</label>
+          <input type="text" id="userName" required />
+
+          <label for="userPhone">Телефон:</label>
+          <input type="text" id="userPhone" required />
+
+          <label for="userEmail">Email:</label>
+          <input type="email" id="userEmail" />
+
+          <label for="companyName">Компания:</label>
+          <input type="text" id="companyName" />
+
+          <label for="userTerminals">Терминалы (через запятую):</label>
+          <input type="text" id="userTerminals" />
+
+          <label for="userWatched">Наблюдаемые:</label>
+          <input type="text" id="userWatched" />
+
+          <button type="submit" id="submitBtn">Сохранить</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Модальное окно для подтверждения удаления -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content">
+        <span class="close" id="closeDeleteModal">&times;</span>
+        <h2>Вы уверены, что хотите удалить этого пользователя?</h2>
+        <button id="confirmDeleteBtn">Удалить</button>
+        <button id="cancelDeleteBtn">Отмена</button>
+      </div>
+    </div>
+
     <script src="./pablic/js/admin/api.js"></script>
-</body>
+    <script src="./pablic/js/admin/index.js"></script>
+  </body>
 </html>

@@ -1,180 +1,3 @@
-// const TelegramBot = require("node-telegram-bot-api");
-// const axios = require("axios");
-// // const { updateUserbot } = require("../controller/merchantController");
-
-// // Замените этот токен на токен вашего Telegram-бота
-// const token = "7163916049:AAGzzgjvJBYe3WuetEHzvH5qY2OULizh4r8";
-
-// // Создаем экземпляр бота
-// const bot = new TelegramBot(token, { polling: true });
-
-// const terminalStates = {};
-
-// // Обработка команды /start
-// bot.onText(/\/start/, (msg) => {
-//   const chatId = msg.chat.id;
-//   bot.sendMessage(
-//     chatId,
-//     "Привет! Пожалуйста, поделитесь своим номером телефона.",
-//     {
-//       reply_markup: {
-//         keyboard: [
-//           [
-//             {
-//               text: "Поделиться номером телефона",
-//               request_contact: true,
-//             },
-//           ],
-//         ],
-//         one_time_keyboard: true,
-//       },
-//     }
-//   );
-// });
-// let globalTerminal = null
-// // Обработка получения контакта (номера телефона)
-// bot.on("contact", async (msg) => {
-//   const chatId = msg.chat.id;
-//   const phoneNumber = msg.contact.phone_number;
-//   const phone = phoneNumber.slice(1);
-
-//   try {
-//     const response = await axios.get(
-//       `http://localhost:5000/merchant/userbots/search?phoneNumber=%2B${phone}`
-//     );
-//     const data = response.data;
-//     await axios.put(`http://localhost:5000/merchant/userbots/${data.id}`, {
-//       chatid: chatId,
-//     });
-
-//     // const terminals = data.terminals;
-//     globalTerminal = data.terminals;
-//     console.log(globalTerminal, "globalTerminal")
-//     const terminalsArray = data.terminals;
-//     const terminalKeysAndValues = terminalsArray.map((terminal) => {
-//       return Object.entries(terminal).map(([key, value]) => ({ key, value }));
-//     });
-
-//     console.log(terminalKeysAndValues);
-
-//     // terminalStates[chatId] = {};
-//     // terminalsArray.forEach((terminal) => {
-//     //   terminalStates[chatId][terminal] = false; // Изначально все терминалы неактивны
-//     // });
-
-//     // Формируем сообщение с информацией о пользователе
-//     const message = `
-//     Профиль:
-//     Чат: ${data.chatid}
-//     Телефон: ${data.telephone_telegram}
-//     Email: ${data.email}
-//     Компания: ${data.company_name}
-//     ФИО: ${data.full_name}
-//     Зарегистрирован: ${new Date(data.createdAt).toLocaleString()}
-
-// Выберите состояние терминала:
-//     `;
-
-//     // Создаем кнопки для терминалов
-//     const inlineKeyboard = terminalKeysAndValues.flatMap((terminals, index) => {
-//       return terminals.map((terminal) => [
-//         {
-//           text: `${index + 1}. Терминал ${terminal.key}: ${terminal.value}`,
-//           callback_data: `${terminal.key}_${terminal.value}`,
-//         },
-//       ]);
-//     });
-
-//     console.log(inlineKeyboard, "inlineKeyboard!");
-
-//     // Отправляем сообщение с inline кнопками
-//     bot.sendMessage(chatId, message, {
-//       reply_markup: {
-//         inline_keyboard: inlineKeyboard,
-//       },
-//     });
-//   } catch (error) {
-//     console.error("Ошибка при отправке запроса на сервер:", error);
-//     bot.sendMessage(chatId, "Не найдено");
-//   }
-// });
-
-// // bot.on()
-
-// // Обработка нажатия на кнопки
-// bot.on("callback_query", (callbackQuery) => {
-//   const chatId = callbackQuery.message.chat.id;
-//     const messageId = callbackQuery.message.message_id;
-
-//   const terminal = callbackQuery.data.split("_")[1];
-//   console.log(callbackQuery);
-//   const dirtyArray = callbackQuery.message.reply_markup.inline_keyboard;
-//   const terminalsArray = []
-//   dirtyArray.forEach((element, index) => {
-//     console.log(element, index);
-//     const splitArr = element[0].callback_data.split("_");
-//     if(splitArr[1] === "false") {
-//       splitArr[1] = false;
-//     } else if (splitArr[1] === "true") {
-//       splitArr[1] = true;
-//     }
-    
-//     if (splitArr[0] === terminal && splitArr[1] ) {
-//       !splitArr[1]
-//     } else if (splitArr[0] === terminal && !splitArr[1]) {
-//       splitArr[1] = true;
-//     }
-
-//     terminalsArray.push([{
-//       key: splitArr[0],
-//       value: splitArr[1],
-//     }]);
-
-//   });
-//   console.log(terminalsArray);
-
-//   // Обрабатываем нажатие на кнопку
-
-//   // Переключаем состояние терминала
-//   // terminalStates[chatId][terminal] = !terminalStates[chatId][terminal];
-
-//   // Обновляем кнопки
-// const terminalKeysAndValues = terminalsArray.map((terminal) => {
-//   return Object.entries(terminal).map(([key, value]) => ({ key, value }));
-// });
-// const replyInlineKeyboard = terminalKeysAndValues.flatMap((terminals, index) => {
-//   return terminals.map((terminal) => [
-//     {
-//       text: `${index + 1}. Терминал ${terminal.key}: ${terminal.value}`,
-//       callback_data: `${terminal.key}_${terminal.value}`,
-//     },
-//   ]);
-// });
-
-//   // const inlineKeyboard = Object.keys(terminalStates[chatId]).map((terminal) => [
-//   //   {
-//   //     text: `Терминал ${terminal}: ${
-//   //       terminalStates[chatId][terminal] ? "Активен" : "Неактивен"
-//   //     }`,
-//   //     callback_data: `toggle_${terminal}`,
-//   //   },
-//   // ]);
-//   bot.editMessageReplyMarkup({
-//     chat_id: chatId,
-//     message_id: parseInt(callbackQuery.message.message_id),
-//     reply_markup: {
-//       inline_keyboard: replyInlineKeyboard,
-//     },
-//   });
-
-
-
-// });
-
-// // Запуск бота
-// bot.on("polling_error", (error) => console.log(`Polling error: ${error}`));
-
-
 const TelegramBot = require("node-telegram-bot-api");
 const axios = require("axios");
 
@@ -182,215 +5,174 @@ const axios = require("axios");
 const token = "7163916049:AAGzzgjvJBYe3WuetEHzvH5qY2OULizh4r8";
 const bot = new TelegramBot(token, { polling: true });
 
+// Адрес для регистрации и получения данных
+const url = "http://localhost:5000/registrationusers/registration";
+
+// Состояние пользователей для отслеживания контекста
+const userState = {};
+
 // Обработчик команды /start
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   bot.sendMessage(
     chatId,
-    "Привет! Пожалуйста, поделитесь своим номером телефона.",
+    "👋 Привіт! Щоб продовжити, поділіться своїм номером телефону.",
     {
       reply_markup: {
         keyboard: [
           [
             {
-              text: "Поделиться номером телефона",
+              text: "📞 Поділитися номером телефону",
               request_contact: true,
             },
           ],
         ],
         one_time_keyboard: true,
+        resize_keyboard: true,
       },
     }
   );
 });
 
-currentData = null;
+// Функция для очистки номера телефона от символов и пробелов
+const cleanPhoneNumber = (phoneNumber) => {
+  return phoneNumber.replace(/[^\d]/g, "");
+};
+
 // Обработчик получения контакта
 bot.on("contact", async (msg) => {
-  console.log(msg, "msg!!!!");
   const chatId = msg.chat.id;
-  const phoneNumber = msg.contact.phone_number;
-  console.log(phoneNumber, "phoneNumber");
+  let phoneNumber = msg.contact.phone_number;
 
+  // Очищаем номер телефона от символов и пробелов
+  phoneNumber = cleanPhoneNumber(phoneNumber);
 
-  try {
-    const response = await axios.get(
-      //http://localhost:5000/merchant/userbots/search?phoneNumber=%2B380638532509
-      `http://localhost:5000/merchant/userbots/search?phoneNumber=%2B${phoneNumber}`
-    );
-    const data = response.data;
-console.log(data, "resData");
-    currentData = data;
-    // await axios.post(`http://localhost:5000/merchant/userbots/${data.id}`, {
-    //   chatid: chatId,
-    // }).then(() => console.log("userbot updated")).catch((err) => console.error(err));
-
-    const terminalsArray = data.terminals;
-    const inlineKeyboard = terminalsArray.map((terminal, index) => [
-      {
-        text: `${terminal.name}: ${terminal.status}`,
-        callback_data: `update`,
-      },
-    ]);
-
-    const message = `
-Профиль:
-Чат: ${data.chatid}
-Телефон: ${data.telephone_telegram}
-Email: ${data.email}
-Компания: ${data.company_name}
-ФИО: ${data.full_name}
-Зарегистрирован: ${new Date(data.createdAt).toLocaleString()}
-
-Выберите состояние терминала:
-    `;
-
-    bot.sendMessage(chatId, message, {
-      reply_markup: {
-        inline_keyboard: inlineKeyboard,
-      },
-    });
-  } catch (error) {
-    console.error("Ошибка при отправке запроса на сервер:", error);
-    bot.sendMessage(chatId, "Не найдено");
-  }
-});
-
-// Обработчик нажатий на кнопки (callback_query)
-bot.on("callback_query", async (callbackQuery) => {
-      // const data = JSON.parse(callbackQuery.data);
-      // const opts = {
-      //   chat_id: callbackQuery.message.chat.id,
-      //   message_id: callbackQuery.message.message_id,
-      // };
-  const msg = callbackQuery.message;
-    bot.answerCallbackQuery(callbackQuery.id)
-        .then(() => bot.sendMessage(msg.chat.id, "You clicked!"));
-
-      
-  const chatId = callbackQuery.message.chat.id;
-  const callbackData = callbackQuery.data;
-  console.log(currentData, "currentData");
-  try {
-    // Отправляем данные на сервер
-    
-
-const splitData = callbackData.split("_")
-
-console.log(currentData.terminals, "currentData.terminals", currentData.terminals[splitData[0]]);
-
-
-if (splitData[0] >= 0 && splitData[0] < currentData.terminals.length) {
-  // Извлекаем объект по индексу
-  const item = currentData.terminals[splitData[0]];
-
-  // Здесь должна быть логика для определения, какой именно ключ нужно изменить
-  // Например, предположим, что мы хотим изменить первый ключ объекта
-  const keys = Object.keys(item); // Получаем все ключи объекта
-  const firstKey = keys[0]; // Берем первый ключ
-
-  let newValue;
-  if (splitData[2]) {
-    newValue = false;
-  } else if (!splitData[2]) {
-    newValue = true;
-  }
-
-  // Новое значение для ключа
-
-  // Создаем новый объект с измененным значением первого ключа
-  const updatedItem = { ...item, [firstKey]: newValue };
-
-  // Заменяем старый объект новым в массиве
-  currentData.terminals[splitData[0]] = updatedItem;
-
-  console.log(currentData.terminals);
-} else {
-  console.log('Index out of bounds');
-}
-
-
-    await axios.post("http://localhost:5000/merchant/userbots/sendbtn", {
+  if (!phoneNumber) {
+    return bot.sendMessage(
       chatId,
-      callbackData,
-    });
-    // await axios.put(`http://localhost:5000/merchant/userbots/${currentData.id}`, {
-    //   terminals: ,
-    // });
+      "⚠️ Телефонний номер не вказано. Будь ласка, спробуйте ще раз."
+    );
+  }
 
-    // const inlineKeyboard = currentData.terminals.map((terminal, index) => [
-    //   {
-    //     text: `${index + 1}. Терминал ${Object.keys(terminal)[0]}: ${
-    //       Object.values(terminal)[0]
-    //     }`,
-    //     callback_data: `${index}_${Object.keys(terminal)[0]}_${
-    //       Object.values(terminal)[0]
-    //     }`,
-    //   },
-    // ]);
+  try {
+    // Проверяем состояние пользователя
+    if (userState[chatId] && userState[chatId].action === "get_info") {
+      // Запрос данных по chatid
+      const response = await axios.post(url, {
+        telephone_telegram: phoneNumber,
+        chatid: chatId,
+      });
 
+      const data = response.data;
 
-  // bot.editMessageReplyMarkup(
-  //   {
-  //     inline_keyboard: inlineKeyboard,
-  //   },
-  //   {
-  //     chat_id: chatId,
-  //     message_id: callbackQuery.message.message_id,
-  //   }
-  // );
+      if (!data || !data.telephone_telegram) {
+        bot.sendMessage(
+          chatId,
+          "🔍 Ваші дані не знайдено. Переконайтеся, що ви правильно подали номер телефону."
+        );
+      } else {
+        const terminalsString = data.terminals
+          ? data.terminals.join(", ")
+          : "Терміни не вказані";
+        const message = `
+          🎉 Ваш акаунт успішно активований!
+          📞 Телефон: ${data.telephone_telegram || "Телефон не зазначено"}
+          🏢 Компанія: ${data.company_name || "Компанія не зазначена"}
+          👤 ПІБ: ${data.full_name || "ПІБ не зазначено"}
+          📅 Зареєстровано: ${
+            data.enrollment_date || "Дата реєстрації невідома"
+          }
+          📋 Мерчант: ${terminalsString}
+        `;
 
-  bot.answerCallbackQuery(callbackQuery.id);
-    // bot.sendMessage(chatId, `Вы нажали кнопку с данными: ${callbackData}`);
+        bot.sendMessage(chatId, message);
+
+        // Отправляем сообщение о будущих обновлениях
+      }
+
+      // Очистка состояния
+      delete userState[chatId];
+    } else {
+      // Регистрация
+      const response = await axios.post(url, {
+        telephone_telegram: phoneNumber,
+        chatid: chatId,
+      });
+
+      const data = response.data;
+
+      if (!data || !data.telephone_telegram) {
+        bot.sendMessage(
+          chatId,
+          "⚠️ Ваші дані не знайдено. Будь ласка, зверніться до менеджера для уточнення інформації."
+        );
+      } else {
+        const terminalsString = data.terminals
+          ? data.terminals.join(", ")
+          : "Терміни не вказані";
+
+        const message = `
+          🎉 Ваш акаунт успішно активований!
+          📞 Телефон: ${data.telephone_telegram || "Телефон не зазначено"}
+          🏢 Компанія: ${data.company_name || "Компанія не зазначена"}
+          👤 ПІБ: ${data.full_name || "ПІБ не зазначено"}
+          📅 Зареєстровано: ${
+            data.enrollment_date || "Дата реєстрації невідома"
+          }
+          📋 Мерчант: ${terminalsString}
+        `;
+
+        bot.sendMessage(chatId, message, {
+          reply_markup: {
+            keyboard: [
+              [
+                {
+                  text: "📄 Особисті дані",
+                },
+              ],
+            ],
+            resize_keyboard: true,
+            one_time_keyboard: false, // Кнопка всегда доступна
+          },
+        });
+      }
+    }
   } catch (error) {
-    console.error("Ошибка при отправке данных на сервер:", error);
-    bot.sendMessage(chatId, "Произошла ошибка при отправке данных на сервер.");
+    console.error("Помилка при отриманні даних з сервера:", error);
+    bot.sendMessage(
+      chatId,
+      "❌ Нажаль, акаунт не знайдено в системі. Зверніться до менеджера для уточнення інформації. ❌"
+    );
   }
 });
 
-// Обработчик команды /profile
-bot.onText(/\/profile/, async (msg) => {
+// Обработчик кнопки "Особисті дані"
+bot.on("message", (msg) => {
   const chatId = msg.chat.id;
+  const text = msg.text;
 
-  try {
-    // Получаем данные пользователя по chatId
-    const response = await axios.get(
-      `http://localhost:5000/merchant/userbots/search?chatId=${chatId}`
-    );
-    const data = response.data;
+  if (text === "📄 Особисті дані") {
+    // Устанавливаем состояние пользователя на получение информации
+    userState[chatId] = { action: "get_info" };
 
-    const terminalsArray = data.terminals;
-    const inlineKeyboard = terminalsArray.map((terminal, index) => [
+    bot.sendMessage(
+      chatId,
+      "📝 Щоб отримати інформацію про ваш акаунт, поділіться своїм номером телефону.",
       {
-        text: `${index + 1}. Терминал ${Object.keys(terminal)[0]}: ${
-          Object.values(terminal)[0]
-        }`,
-        callback_data: `${Object.keys(terminal)[0]}_${
-          Object.values(terminal)[0]
-        }`,
-      },
-    ]);
-
-    const message = `
-Профиль:
-Чат: ${data.chatid}
-Телефон: ${data.telephone_telegram}
-Email: ${data.email}
-Компания: ${data.company_name}
-ФИО: ${data.full_name}
-Зарегистрирован: ${new Date(data.createdAt).toLocaleString()}
-
-Выберите состояние терминала:
-    `;
-
-    bot.sendMessage(chatId, message, {
-      reply_markup: {
-        inline_keyboard: inlineKeyboard,
-      },
-    });
-  } catch (error) {
-    console.error("Ошибка при получении профиля:", error); 
-    bot.sendMessage(chatId, "Не удалось получить профиль.");
+        reply_markup: {
+          keyboard: [
+            [
+              {
+                text: "📞 Поділитися номером телефону",
+                request_contact: true,
+              },
+            ],
+          ],
+          one_time_keyboard: true,
+          resize_keyboard: true,
+        },
+      }
+    );
   }
 });
 
